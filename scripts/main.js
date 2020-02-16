@@ -31,7 +31,7 @@ function onLoad() {
     randomEventWorker = new Worker('randomEventWorker.js');
     // randomEventWorker.postMessage("test");
     randomEventWorker.onmessage = function(e) {
-        // alert("random event: " + e.data);
+        //myGame.randomEvent(spawnVirus());
     }
 
     createAvailableAutoclicker();
@@ -259,6 +259,21 @@ function Sleep(milliseconds) {
     return new Promise(resolve => setTimeout(resolve, milliseconds));
 }
 
+function spawnVirus(virusID) {
+    return;
+    // TODO
+    let virus = document.createElement("img");
+    virus.src = "img/...";
+    virus.onclick = function(e) {
+
+    };
+    virus.style.position = "absolute";
+    virus.style.left = "0px";
+    virus.style.bottom = "0px";
+    document.getElementById("body").appendChild(virus);
+    alert(myGame.existingViruses[virusID].name);
+}
+
 function debugAddBytes(index) {
     switch (index) {
         case 0:
@@ -302,10 +317,14 @@ function flushGameClick() {
     newGame();
 }
 
-function exportGame() {
+function exportGameClick() {
     saveGameToFile();
 }
 
-function importGame() {
+function importGameClick() {
     loadGameFromFile();
+}
+
+function spawnVirusClick() {
+    myGame.randomEvent(spawnVirus);
 }
