@@ -43,12 +43,34 @@ function onLoad() {
     }
 }
 
-function loadGame() {
-    var result = document.cookie.match(new RegExp("gameData" + '=([^;]+)'));
-    result && (result = JSON.parse(result[1]));
+function loadGame(gameDataString) {
+    var result;
+    if (gameDataString == null) {
+        result = document.cookie.match(new RegExp("gameData" + '=([^;]+)'));
+        result && (result = JSON.parse(result[1]));
+    } else {
+        result = JSON.parse(gameDataString);
+    }
     myGame.loadGame(result)
 
     updateGameRelatedUI();
+}
+
+function loadGameFromFile() {
+    var fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.style.display = "none";
+    fileInput.onchange = function(e) {
+        var fileToLoad = fileInput.files[0];
+        var fileReader = new FileReader();
+        fileReader.onload = function(fileLoadedEvent) {
+            var gameDataString = fileLoadedEvent.target.result;
+            loadGame(gameDataString);
+            document.removeChild(fileInput);
+        };
+        fileReader.readAsText(fileToLoad, "UTF-8");
+    };
+    fileInput.click();
 }
 
 function newGame() {
@@ -64,6 +86,26 @@ function saveGame() {
     let gameData = myGame.getGameData()
     let stringifiedGame = JSON.stringify(gameData);
     document.cookie = "gameData=" + stringifiedGame + "; path=/";
+}
+
+function saveGameToFile() {
+    let gameData = myGame.getGameData()
+    var textToSave = JSON.stringify(gameData);
+    var textToSaveAsBlob = new Blob([textToSave], { type: "text/plain" });
+    var textToSaveAsURL = window.URL.createObjectURL(textToSaveAsBlob);
+    var fileNameToSaveAs = "scanIT_save_" + Date.now();
+
+    var downloadLink = document.createElement("a");
+    downloadLink.download = fileNameToSaveAs;
+    downloadLink.innerHTML = "Download File";
+    downloadLink.href = textToSaveAsURL;
+    downloadLink.onclick = function(e) {
+        document.body.removeChild(event.target);
+    };
+    downloadLink.style.display = "none";
+    document.body.appendChild(downloadLink);
+
+    downloadLink.click();
 }
 
 function updateGameRelatedUI() {
@@ -254,13 +296,16 @@ function saveGameClick() {
 
 function loadGameClick() {
     loadGame();
-    return;
-    var result = document.cookie.match(new RegExp("gameData" + '=([^;]+)'));
-    result && (result = JSON.parse(result[1]));
-    myGame.loadGame(result)
-        // onLoad();
 }
 
 function flushGameClick() {
     newGame();
+}
+
+function exportGame() {
+    saveGameToFile();
+}
+
+function importGame() {
+    loadGameFromFile();
 }
