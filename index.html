@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de" lang="de">
+
+<head>
+    <title>Clicker</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <script src="scripts/gameData.js"></script>
+    <script src="scripts/game.js"></script>
+    <script src="scripts/autoClicker.js"></script>
+    <script src="scripts/dialogues.js"></script>
+    <script src="scripts/main.js"></script>
+    <link rel="stylesheet" href="style/scanIT.css">
+</head>
+
+<body onload="onLoad()" id="body" background="img/background.jpg">
+    <div id="middle">
+        <h1 id="clicksLabel"></h1>
+        <h4 id="perSecLabel"></h4>
+        <div id="stickDiv">
+            <img src="img/stick.png" draggable="false" alt="alt" id="stick" onclick="imageClick()">
+        </div>
+        <div id="autoClicker">
+
+        </div>
+        <div id="debugButtonDiv">
+            <button type="button" onclick="debugAddBytes(0)">KB</button>
+            <button type="button" onclick="debugAddBytes(1)">MB</button>
+            <button type="button" onclick="debugAddBytes(2)">GB</button>
+            <button type="button" onclick="debugAddBytes(3)">TB</button>
+            <button type="button" onclick="debugAddBytes(4)">PB</button>
+            <button type="button" onclick="debugAddBytes(5)">EB</button>
+            <button type="button" onclick="debugAddBytes(6)">ZB</button>
+            <button type="button" onclick="debugAddBytes(7)">YB</button>
+            <button type="button" onclick="saveGame()">Save</button>
+            <button type="button" onclick="loadGame()">Load</button>
+        </div>
+    </div>
+
+    <div id="dialogueOuterDiv">
+        <div id="dialogueDiv">
+        </div>
+    </div>
+</body>
