@@ -1,5 +1,9 @@
 class game {
     constructor() {
+        this.initializeGame();
+    }
+
+    initializeGame() {
         this.clicks = 0;
         this.perClick = 1;
         this.perSec = 0;
@@ -25,6 +29,12 @@ class game {
         this.perSec = gameData.perSec;
         this.exisitingAutoClickers = gameData.exisitingAutoClickers;
         this.myAutoClickers = gameData.myAutoClickers;
+        this.loadingActive = false;
+    }
+
+    newGame() {
+        this.loadingActive = true;
+        this.initializeGame();
         this.loadingActive = false;
     }
 

@@ -21,7 +21,7 @@ class scanStation1 extends autoClicker {
             100,
             0,
             "img/notebook.png",
-            "An old nodebook with a slow dual core mobile CPU.");
+            "An old notebook with a slow dual core mobile CPU.");
     }
 }
 

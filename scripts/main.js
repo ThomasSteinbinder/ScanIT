@@ -20,16 +20,14 @@ function onLoad() {
     clickLabel = document.getElementById('clicksLabel')
     perSecLabel = document.getElementById('perSecLabel');
     stickImg.addEventListener("click", imageClickAnimation, false);
-    updatePerSecLabel();
-    setInterval(function() { window.document.title = formatClicks(myGame.clicks); }, 1000);
+    // setInterval(function() { window.document.title = formatClicks(myGame.clicks); }, 1000);
 
-    autoClickWorker = new Worker('autoClickWorker.js');
+    autoClickWorker = new Worker('scripts/autoClickWorker.js');
     autoClickWorker.onmessage = function(e) {
         myGame.tick();
         updateClickCounter()
     };
 
-    updatePerSecLabel();
     randomEventWorker = new Worker('randomEventWorker.js');
     // randomEventWorker.postMessage("test");
     randomEventWorker.onmessage = function(e) {
@@ -37,8 +35,51 @@ function onLoad() {
     }
 
     createAvailableAutoclicker();
-    // setUpDialogueWindow();
-    // showDialogue(introDialogue());
+    try {
+        loadGame();
+    } catch (err) {
+        alert("Error loading game! New game will be created.")
+        newGame();
+    }
+}
+
+function loadGame() {
+    var result = document.cookie.match(new RegExp("gameData" + '=([^;]+)'));
+    result && (result = JSON.parse(result[1]));
+    myGame.loadGame(result)
+
+    updateGameRelatedUI();
+}
+
+function newGame() {
+    myGame.newGame();
+    saveGame();
+    updateGameRelatedUI();
+
+    setUpDialogueWindow();
+    showDialogue(introDialogue());
+}
+
+function saveGame() {
+    let gameData = myGame.getGameData()
+    let stringifiedGame = JSON.stringify(gameData);
+    document.cookie = "gameData=" + stringifiedGame + "; path=/";
+}
+
+function updateGameRelatedUI() {
+    updateClickCounter()
+    updatePerSecLabel();
+    updateAutoClickerUI();
+}
+
+function updateClickCounter() {
+    clickLabel.innerHTML = formatClicks(myGame.clicks) + " scanned";
+    window.document.title = formatClicks(myGame.clicks);
+    saveGame();
+}
+
+function updatePerSecLabel() {
+    perSecLabel.innerHTML = "+" + formatClicks(myGame.perSec) + " scanned per second";
 }
 
 function formatClicks(unformatted) {
@@ -64,7 +105,6 @@ function formatClicks(unformatted) {
 }
 
 function createAvailableAutoclicker() {
-
     let container = document.getElementById('autoClicker');
 
     for (let i = 0; i < myGame.exisitingAutoClickers.length; i++) {
@@ -126,7 +166,6 @@ function createAvailableAutoclicker() {
             "Scans " + formatClicks(myGame.exisitingAutoClickers[i].perSec) + " data /sec for you!";
         div.appendChild(tooltip);
     }
-    updateAutoClickerUI();
 }
 
 function updateAutoClickerUI() {
@@ -174,14 +213,6 @@ function imageClick() {
     updateClickCounter();
 }
 
-function updateClickCounter() {
-    clickLabel.innerHTML = formatClicks(myGame.clicks) + " scanned";
-}
-
-function updatePerSecLabel() {
-    perSecLabel.innerHTML = "+" + formatClicks(myGame.perSec) + " scanned per second";
-}
-
 function Sleep(milliseconds) {
     return new Promise(resolve => setTimeout(resolve, milliseconds));
 }
@@ -217,17 +248,19 @@ function debugAddBytes(index) {
     updateClickCounter();
 }
 
-function saveGame() {
-    let gameData = myGame.getGameData()
-    let stringifiedGame = JSON.stringify(gameData);
-    // var cookie = ["game=", stringifiedGame, '; domain=.', window.location.host.toString(), '; path=/;'].join('');
-    document.cookie = "gameData=" + stringifiedGame + "; max-age=86400; path=/";
-    // document.cookie = cookie;
+function saveGameClick() {
+    saveGame();
 }
 
-function loadGame() {
+function loadGameClick() {
+    loadGame();
+    return;
     var result = document.cookie.match(new RegExp("gameData" + '=([^;]+)'));
     result && (result = JSON.parse(result[1]));
     myGame.loadGame(result)
         // onLoad();
+}
+
+function flushGameClick() {
+    newGame();
 }
