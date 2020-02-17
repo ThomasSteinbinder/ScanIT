@@ -23,14 +23,14 @@ function onLoad() {
     // setInterval(function() { window.document.title = formatClicks(myGame.clicks); }, 1000);
 
     autoClickWorker = new Worker('scripts/autoClickWorker.js');
-    autoClickWorker.onmessage = function(e) {
+    autoClickWorker.onmessage = function (e) {
         myGame.tick();
         updateClickCounter()
     };
 
     randomEventWorker = new Worker('randomEventWorker.js');
     // randomEventWorker.postMessage("test");
-    randomEventWorker.onmessage = function(e) {
+    randomEventWorker.onmessage = function (e) {
         //myGame.randomEvent(spawnVirus());
     }
 
@@ -60,10 +60,10 @@ function loadGameFromFile() {
     var fileInput = document.createElement("input");
     fileInput.type = "file";
     fileInput.style.display = "none";
-    fileInput.onchange = function(e) {
+    fileInput.onchange = function (e) {
         var fileToLoad = fileInput.files[0];
         var fileReader = new FileReader();
-        fileReader.onload = function(fileLoadedEvent) {
+        fileReader.onload = function (fileLoadedEvent) {
             var gameDataString = fileLoadedEvent.target.result;
             loadGame(gameDataString);
             document.removeChild(fileInput);
@@ -99,7 +99,7 @@ function saveGameToFile() {
     downloadLink.download = fileNameToSaveAs;
     downloadLink.innerHTML = "Download File";
     downloadLink.href = textToSaveAsURL;
-    downloadLink.onclick = function(e) {
+    downloadLink.onclick = function (e) {
         document.body.removeChild(event.target);
     };
     downloadLink.style.display = "none";
@@ -259,19 +259,56 @@ function Sleep(milliseconds) {
     return new Promise(resolve => setTimeout(resolve, milliseconds));
 }
 
-function spawnVirus(virusID) {
-    return;
-    // TODO
-    let virus = document.createElement("img");
-    virus.src = "img/...";
-    virus.onclick = function(e) {
+async function spawnVirus(virusID) {
 
+    let virus = document.createElement("div");
+    let virusImg = document.createElement("img");
+    virus.appendChild(virusImg);
+    virusImg.src = "img/virus.png";
+    virusImg.style.width = "100%";
+    virus.onclick = function (e) {
+        console.log(myGame.existingViruses[virusID].name);
     };
     virus.style.position = "absolute";
-    virus.style.left = "0px";
-    virus.style.bottom = "0px";
+    virus.style.width = "50px";
+
+    let screenWidth = window.innerWidth;//document.getElementById("body").offsetWidth;
+    let screenHeight = window.innerHeight;//document.getElementById("body").offsetHeight;
+
+    let x = Math.floor(Math.random() * screenWidth);
+    let y = Math.floor(Math.random() * screenHeight);
+    let x2 = screenWidth - x - 50;
+    let y2 = screenHeight - y - 50;
+
+    if (Math.random() > 0.5) {
+        x = 0;
+        virus.style.left = "0px";
+        x2 = screenWidth - 50;
+    } else {
+        y = 0;
+        virus.style.top = "0px";
+        y2 = screenHeight - 50;
+    }
+
+    let virusAnimation = [
+        { transform: 'translateX(' + x + 'px) translateY(' + y + 'px)' },
+        { transform: 'translateX(' + x2 + 'px) translateY(' + y2 + 'px)' }
+    ];
+
+    let virusTiming = {
+        duration: 8000,
+        iterations: Infinity
+    }
+
+    try {
+        virus.animate(virusAnimation, virusTiming);
+    } catch (err) {
+
+    }
+
     document.getElementById("body").appendChild(virus);
-    alert(myGame.existingViruses[virusID].name);
+    await Sleep(8000);
+    document.getElementById("body").removeChild(virus);
 }
 
 function debugAddBytes(index) {
