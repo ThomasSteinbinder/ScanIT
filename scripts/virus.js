@@ -1,7 +1,7 @@
 // https://www.voipshield.com/20-common-types-of-viruses-affecting-your-computer/
 // https://www.ceotodaymagazine.com/2019/06/the-worst-computer-viruses-in-history/
 class virus {
-    constructor(id, name, description, chance = 1, reward) {
+    constructor(id, name, description, reward, chance = 1) {
         if (this.constructor === virus) {
             throw new TypeError('Abstract class "virus" cannot be instantiated directly.');
         }
@@ -9,8 +9,8 @@ class virus {
         this.id = id
         this.name = name;
         this.description = description;
-        this.chance = chance;
         this.reward = reward;
+        this.chance = chance;        
     }
 }
 

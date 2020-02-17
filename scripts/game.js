@@ -12,6 +12,7 @@ class game {
             new scanStation2(),
             new scanStation3()
         ];
+        this.myAutoClickers = new Array(this.exisitingAutoClickers.length).fill(false);
         this.existingViruses = [
             new virus1(),
             new virus2(),
@@ -21,8 +22,7 @@ class game {
             new virus6(),
             new virus7()
         ];
-        this.myAutoClickers = new Array(this.exisitingAutoClickers.length).fill(0);
-
+        this.myViruses = new Array(this.existingViruses.length).fill(0);
         this.loadingActive = false;
     }
 
@@ -69,5 +69,12 @@ class game {
     randomEvent(callback) {
         let index = Math.floor(Math.random() * this.existingViruses.length);
         callback(index);
+    }
+
+    virusClicked1(test) {
+        // alert(test);
+        if(!this.myViruses[test]) {
+            this.myViruses[test] = true;
+        }
     }
 }

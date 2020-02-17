@@ -260,20 +260,24 @@ function Sleep(milliseconds) {
 }
 
 async function spawnVirus(virusID) {
-
     let virus = document.createElement("div");
+    virus.style.position = "absolute";
+    virus.style.left = "0px";
+    virus.style.top = "0px";
+    virus.style.width = "50px";
+    virus.onclick = function (e) {
+        spawnRewardText(myGame.existingViruses[virusID].reward, virus.getBoundingClientRect().left, virus.getBoundingClientRect().top);
+        myGame.virusClicked1(virusID);
+        document.getElementById("body").removeChild(virus);
+    };
+
     let virusImg = document.createElement("img");
     virus.appendChild(virusImg);
     virusImg.src = "img/virus.png";
     virusImg.style.width = "100%";
-    virus.onclick = function (e) {
-        console.log(myGame.existingViruses[virusID].name);
-    };
-    virus.style.position = "absolute";
-    virus.style.width = "50px";
 
-    let screenWidth = window.innerWidth;//document.getElementById("body").offsetWidth;
-    let screenHeight = window.innerHeight;//document.getElementById("body").offsetHeight;
+    let screenWidth = window.innerWidth;
+    let screenHeight = window.innerHeight;
 
     let x = Math.floor(Math.random() * screenWidth);
     let y = Math.floor(Math.random() * screenHeight);
@@ -282,11 +286,9 @@ async function spawnVirus(virusID) {
 
     if (Math.random() > 0.5) {
         x = 0;
-        virus.style.left = "0px";
         x2 = screenWidth - 50;
     } else {
         y = 0;
-        virus.style.top = "0px";
         y2 = screenHeight - 50;
     }
 
@@ -296,19 +298,40 @@ async function spawnVirus(virusID) {
     ];
 
     let virusTiming = {
-        duration: 8000,
-        iterations: Infinity
+        duration: 10000,
+        iterations: 1
     }
 
     try {
         virus.animate(virusAnimation, virusTiming);
-    } catch (err) {
-
-    }
+    } catch (err) { }
 
     document.getElementById("body").appendChild(virus);
-    await Sleep(8000);
-    document.getElementById("body").removeChild(virus);
+    await Sleep(9900);
+    try {
+        document.getElementById("body").removeChild(virus);
+    } catch (err) { }
+
+}
+
+async function spawnRewardText(reward, clickedX, clickedY) {
+
+    let extraDataLabel = document.createElement("p");
+    extraDataLabel.innerHTML = "+ " + formatClicks(reward);
+    extraDataLabel.style.position = "absolute";
+    extraDataLabel.style.left = clickedX + "px";
+    extraDataLabel.style.top = clickedY + "px";
+    extraDataLabel.animate([
+        { transform: 'translateY(0px)', opacity: '100%' },
+        { transform: 'translateY(-80px)', opacity: '0%' }
+    ], {
+        duration: 1000,
+        iterations: 1
+    });
+
+    document.getElementById("body").appendChild(extraDataLabel);
+    await Sleep(1000);
+    document.getElementById("body").removeChild(extraDataLabel);
 }
 
 function debugAddBytes(index) {
