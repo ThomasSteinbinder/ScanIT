@@ -260,11 +260,12 @@ function Sleep(milliseconds) {
 }
 
 async function spawnVirus(virusID) {
+    let virusWidth = 50;
     let virus = document.createElement("div");
     virus.style.position = "absolute";
     virus.style.left = "0px";
     virus.style.top = "0px";
-    virus.style.width = "50px";
+    virus.style.width = virusWidth + "px";
     virus.onclick = function (e) {
         spawnRewardText(myGame.existingViruses[virusID].reward, virus.getBoundingClientRect().left, virus.getBoundingClientRect().top);
         myGame.virusClicked1(virusID);
@@ -281,15 +282,22 @@ async function spawnVirus(virusID) {
 
     let x = Math.floor(Math.random() * screenWidth);
     let y = Math.floor(Math.random() * screenHeight);
-    let x2 = screenWidth - x - 50;
-    let y2 = screenHeight - y - 50;
+    let x2 = screenWidth - x - virusWidth;
+    let y2 = screenHeight - y - virusWidth;
 
-    if (Math.random() > 0.5) {
+    let random = Math.random();
+    if (random > 0.75) { // spawn on the left
         x = 0;
-        x2 = screenWidth - 50;
-    } else {
+        x2 = screenWidth - virusWidth;
+    } else if (random > 0.5) { // spawn on the top
         y = 0;
-        y2 = screenHeight - 50;
+        y2 = screenHeight - virusWidth;
+    } else if (random > 0.25) { // spawn on the right
+        x = screenWidth - virusWidth;
+        x2 = 0;
+    } else { // spawn on the bottom
+        y = screenHeight - virusWidth;
+        y2 = 0;
     }
 
     let virusAnimation = [
