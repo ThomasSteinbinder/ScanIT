@@ -12,7 +12,7 @@ class game {
             new scanStation2(),
             new scanStation3()
         ];
-        this.myAutoClickers = new Array(this.exisitingAutoClickers.length).fill(false);
+        this.myAutoClickers = new Array(this.exisitingAutoClickers.length).fill(0);
         this.existingViruses = [
             new virus1(),
             new virus2(),
@@ -22,13 +22,13 @@ class game {
             new virus6(),
             new virus7()
         ];
-        this.myViruses = new Array(this.existingViruses.length).fill(0);
+        this.myViruses = new Array(this.existingViruses.length).fill(false);
         this.loadingActive = false;
     }
 
     getGameData() {
         return new gameData(this.clicks, this.perClick, this.perSec,
-            this.exisitingAutoClickers, this.myAutoClickers);
+            this.exisitingAutoClickers, this.myAutoClickers, this.myViruses);
     }
 
     loadGame(gameData) {
@@ -38,6 +38,7 @@ class game {
         this.perSec = gameData.perSec;
         this.exisitingAutoClickers = gameData.exisitingAutoClickers;
         this.myAutoClickers = gameData.myAutoClickers;
+        this.myViruses = gameData.myViruses;
         this.loadingActive = false;
     }
 
@@ -71,10 +72,11 @@ class game {
         callback(index);
     }
 
-    virusClicked1(test) {
+    virusClicked1(virusID) {
         // alert(test);
-        if(!this.myViruses[test]) {
-            this.myViruses[test] = true;
+        this.clicks += this.existingViruses[virusID].reward;
+        if(!this.myViruses[virusID]) {
+            this.myViruses[virusID] = true;
         }
     }
 }
