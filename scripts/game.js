@@ -1,6 +1,24 @@
 class game {
     constructor() {
+        this.observers = [];
+
         this.initializeGame();
+    }
+
+    addObserver(observerFunction) {
+        this.observers.push(observerFunction);
+    }
+
+    removeObserver(observerFnToRemove) {
+        this.observers = this.observers.filter(observerFunction => {
+            if (observerFunction != observerFnToRemove)
+                return observerFunction;
+        });
+    }
+
+    notifyObservers() {
+        this.observers.forEach(observer =>
+            observer.call());
     }
 
     initializeGame() {
@@ -50,6 +68,7 @@ class game {
 
     click() {
         this.clicks += this.perClick;
+        this.notifyObservers();
     }
 
     buyAutoClicker(id) {
@@ -65,6 +84,7 @@ class game {
         if (this.loadingActive)
             return;
         this.clicks += this.perSec / 10;
+        this.notifyObservers();
     }
 
     randomEvent(callback) {
@@ -73,9 +93,8 @@ class game {
     }
 
     virusClicked1(virusID) {
-        // alert(test);
         this.clicks += this.existingViruses[virusID].reward;
-        if(!this.myViruses[virusID]) {
+        if (!this.myViruses[virusID]) {
             this.myViruses[virusID] = true;
         }
     }

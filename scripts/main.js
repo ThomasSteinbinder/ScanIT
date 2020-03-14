@@ -20,18 +20,16 @@ function onLoad() {
     clickLabel = document.getElementById('clicksLabel')
     perSecLabel = document.getElementById('perSecLabel');
     stickImg.addEventListener("click", imageClickAnimation, false);
-    // setInterval(function() { window.document.title = formatClicks(myGame.clicks); }, 1000);
 
-    autoClickWorker = new Worker('scripts/autoClickWorker.js');
-    autoClickWorker.onmessage = function (e) {
+    autoClickWorker = new Worker('scripts/backgroundClickWorker.js');
+    autoClickWorker.onmessage = function(e) {
         myGame.tick();
-        updateClickCounter()
     };
 
     randomEventWorker = new Worker('randomEventWorker.js');
     // randomEventWorker.postMessage("test");
-    randomEventWorker.onmessage = function (e) {
-        //myGame.randomEvent(spawnVirus());
+    randomEventWorker.onmessage = function(e) {
+        myGame.randomEvent(spawnVirus());
     }
 
     createAvailableAutoclicker();
@@ -41,6 +39,8 @@ function onLoad() {
         alert("Error loading game! New game will be created.")
         newGame();
     }
+
+    myGame.addObserver(updateGameRelatedUI);
 }
 
 function loadGame(gameDataString) {
@@ -60,10 +60,10 @@ function loadGameFromFile() {
     var fileInput = document.createElement("input");
     fileInput.type = "file";
     fileInput.style.display = "none";
-    fileInput.onchange = function (e) {
+    fileInput.onchange = function(e) {
         var fileToLoad = fileInput.files[0];
         var fileReader = new FileReader();
-        fileReader.onload = function (fileLoadedEvent) {
+        fileReader.onload = function(fileLoadedEvent) {
             var gameDataString = fileLoadedEvent.target.result;
             loadGame(gameDataString);
             document.removeChild(fileInput);
@@ -99,7 +99,7 @@ function saveGameToFile() {
     downloadLink.download = fileNameToSaveAs;
     downloadLink.innerHTML = "Download File";
     downloadLink.href = textToSaveAsURL;
-    downloadLink.onclick = function (e) {
+    downloadLink.onclick = function(e) {
         document.body.removeChild(event.target);
     };
     downloadLink.style.display = "none";
@@ -219,8 +219,6 @@ function updateAutoClickerUI() {
 
 function buyAutoClicker(index) {
     myGame.buyAutoClicker(index);
-    updateAutoClickerUI();
-    updatePerSecLabel();
 }
 
 async function imageClickAnimation(e) {
@@ -252,7 +250,7 @@ async function imageClickAnimation(e) {
 
 function imageClick() {
     myGame.click();
-    updateClickCounter();
+    // updateClickCounter();
 }
 
 function Sleep(milliseconds) {
@@ -266,7 +264,7 @@ async function spawnVirus(virusID) {
     virus.style.left = "0px";
     virus.style.top = "0px";
     virus.style.width = virusWidth + "px";
-    virus.onclick = function (e) {
+    virus.onclick = function(e) {
         spawnRewardText(myGame.existingViruses[virusID].reward, virus.getBoundingClientRect().left, virus.getBoundingClientRect().top);
         myGame.virusClicked1(virusID);
         document.getElementById("body").removeChild(virus);
@@ -306,19 +304,19 @@ async function spawnVirus(virusID) {
     ];
 
     let virusTiming = {
-        duration: 10000,
+        duration: 15000,
         iterations: 1
     }
 
     try {
         virus.animate(virusAnimation, virusTiming);
-    } catch (err) { }
+    } catch (err) {}
 
     document.getElementById("body").appendChild(virus);
-    await Sleep(9900);
+    await Sleep(14990);
     try {
         document.getElementById("body").removeChild(virus);
-    } catch (err) { }
+    } catch (err) {}
 
 }
 
