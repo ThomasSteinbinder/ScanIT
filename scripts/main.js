@@ -45,12 +45,10 @@ function onLoad() {
 
 function loadGame(gameDataString) {
     var result;
-    if (gameDataString == null) {
-        result = document.cookie.match(new RegExp("gameData" + '=([^;]+)'));
-        result && (result = JSON.parse(result[1]));
-    } else {
+    if (gameDataString == null)
+        result = JSON.parse(localStorage.getItem('gameData'));
+    else
         result = JSON.parse(gameDataString);
-    }
     myGame.loadGame(result)
 
     updateGameRelatedUI();
@@ -85,7 +83,7 @@ function newGame() {
 function saveGame() {
     let gameData = myGame.getGameData()
     let stringifiedGame = JSON.stringify(gameData);
-    document.cookie = "gameData=" + stringifiedGame + "; path=/";
+    localStorage.setItem('gameData', stringifiedGame);
 }
 
 function saveGameToFile() {
