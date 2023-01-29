@@ -1,5 +1,5 @@
 function introDialogue() {
-    return "This is the intro. lel.";
+    return "Introduction text TODO.";
 }
 
 function setUpDialogueWindow() {
